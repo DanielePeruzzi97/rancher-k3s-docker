@@ -14,7 +14,7 @@ services:
     privileged: true
     restart: always
     environment:
-    - K3S_TOKEN=${K3S_TOKEN:?err}
+    - K3S_TOKEN=${K3S_TOKEN:-secret}
     - K3S_KUBECONFIG_OUTPUT=/output/config
     - K3S_KUBECONFIG_MODE=666
     volumes:
@@ -40,7 +40,7 @@ services:
     restart: always
     environment:
     - K3S_URL=https://server:6443
-    - K3S_TOKEN=${K3S_TOKEN:?err}
+    - K3S_TOKEN=${K3S_TOKEN:-secret}
     networks:
       - k3s
 
@@ -58,13 +58,13 @@ services:
     restart: always
     environment:
     - K3S_URL=https://server:6443
-    - K3S_TOKEN=${K3S_TOKEN:?err}
+    - K3S_TOKEN=${K3S_TOKEN:-secret}
     networks:
       - k3s
 
   kubectl:
-    # image: sysperu/kubectl:latest
-    image: kubectl:latest
+    image: sysperu/kubectl:latest
+    # image: kubectl:latest
     depends_on:
       - server
     environment:
