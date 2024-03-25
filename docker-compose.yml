@@ -4,8 +4,8 @@ services:
     image: "rancher/k3s:${K3S_VERSION:-latest}"
     command: server --tls-san "kubectl"
     tmpfs:
-    - /run
-    - /var/run
+      - /run
+      - /var/run
     ulimits:
       nproc: 65535
       nofile:
@@ -27,11 +27,29 @@ services:
     networks:
       - k3s
 
-  agent:
+  agent-1:
     image: "rancher/k3s:${K3S_VERSION:-latest}"
     tmpfs:
-    - /run
-    - /var/run
+      - /run
+      - /var/run
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 65535
+        hard: 65535
+    privileged: true
+    restart: always
+    environment:
+    - K3S_URL=https://server:6443
+    - K3S_TOKEN=${K3S_TOKEN:?err}
+    networks:
+      - k3s
+
+  agent-2:
+    image: "rancher/k3s:${K3S_VERSION:-latest}"
+    tmpfs:
+      - /run
+      - /var/run
     ulimits:
       nproc: 65535
       nofile:
@@ -51,6 +69,8 @@ services:
       - server
     environment:
       - K3S_URL=https://server:6443
+      - RANCHER_ADMIN_PASSWORD=${RANCHER_ADMIN_PASSWORD:admin}
+      - RANCHER_DOMAIN=${RANCHER_DOMAIN:rancher.local}
     volumes:
       - .:/output
     networks:

@@ -39,8 +39,8 @@ function installRancherUI(){
     kubectl create namespace cattle-system
     helm install rancher rancher-stable/rancher \
         --namespace cattle-system \
-        --set hostname=rancher.local \
-        --set bootstrapPassword=admin
+        --set hostname=${RANCHER_DOMAIN} \
+        --set bootstrapPassword=${RANCHER_ADMIN_PASSWORD}
 }
 
 updateKubeConfig
