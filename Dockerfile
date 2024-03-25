@@ -12,7 +12,10 @@ RUN chmod 700 get_helm.sh
 RUN ./get_helm.sh
 
 VOLUME /root/.kube/
+
 ENV K3S_URL="https://server:6443"
+ENV RANCHER_ADMIN_PASSWORD="admin"
+ENV RANCHER_DOMAIN="rancher.local"
 
 # Copy entrypoint script to execute kubectl and helm commands
 COPY ./entrypoint.sh /entrypoint.sh

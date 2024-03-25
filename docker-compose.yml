@@ -21,7 +21,7 @@ services:
     - k3s-server:/var/lib/rancher/k3s
     - .:/output
     ports:
-    - 6443:6443
+    # - 6443:6443
     - 80:80
     - 443:443
     networks:
@@ -46,7 +46,7 @@ services:
       - k3s
 
   kubectl:
-    image: kubectl:latest
+    image: sysperu/kubectl:latest
     depends_on:
       - server
     environment:
