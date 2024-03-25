@@ -2,7 +2,7 @@
 
 # https://stackoverflow.com/questions/75641788/bash-kubectl-wait-till-all-pods-are-in-running
 function waitForPods(){
-    echo "Waiting for all pods to be in Running or Terminated state..."
+    echo "Waiting for all pods to be in Running or Completed or Terminated state..."
     # kubectl wait pod --all --for=condition=Running --all-namespaces
     pods_count=$(kubectl get pods --all-namespaces | grep -c "Running|Completed|Terminated")
 
