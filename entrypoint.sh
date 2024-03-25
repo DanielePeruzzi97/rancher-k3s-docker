@@ -1,5 +1,14 @@
 #!/bin/bash
 
+function waitForK3SServer(){
+    echo "Waiting for k3s server to be ready..."
+    until kubectl get nodes
+    do
+        echo "Waiting for k3s server to be ready"
+        sleep 5
+    done
+}
+
 # https://stackoverflow.com/questions/75641788/bash-kubectl-wait-till-all-pods-are-in-running
 function waitForPods(){
     echo "Waiting for all pods to be in Running or Completed or Terminated state..."
@@ -43,6 +52,7 @@ function installRancherUI(){
         --set bootstrapPassword=${RANCHER_ADMIN_PASSWORD}
 }
 
+waitForK3SServer
 updateKubeConfig
 installCertManager
 installRancherUI
