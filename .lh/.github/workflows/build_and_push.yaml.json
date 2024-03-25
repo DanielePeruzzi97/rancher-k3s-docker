@@ -1,0 +1,42 @@
+{
+    "sourceFile": ".github/workflows/build_and_push.yaml",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 6,
+            "patches": [
+                {
+                    "date": 1711360368340,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1711360383406,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -20,9 +20,9 @@\n         username: ${{ secrets.DOCKER_ACCOUNT }}\n         password: ${{ secrets.DOCKER_TOKEN }}\n           \n \n-    - name: Build and Push Docker Nextcloud Image\n+    - name: Build and Push Docker Kubectl; Image\n       working-directory: ansible/images/nextcloud\n       run: |\n         docker build -t nextcloud .\n         docker tag nextcloud sysperu/nextcloud\n"
+                },
+                {
+                    "date": 1711360392091,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -20,10 +20,10 @@\n         username: ${{ secrets.DOCKER_ACCOUNT }}\n         password: ${{ secrets.DOCKER_TOKEN }}\n           \n \n-    - name: Build and Push Docker Kubectl; Image\n-      working-directory: ansible/images/nextcloud\n+    - name: Build and Push Docker Kubectl Image\n+      working-directory: \n       run: |\n         docker build -t nextcloud .\n         docker tag nextcloud sysperu/nextcloud\n         docker push sysperu/nextcloud\n"
+                },
+                {
+                    "date": 1711360403442,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -21,11 +21,11 @@\n         password: ${{ secrets.DOCKER_TOKEN }}\n           \n \n     - name: Build and Push Docker Kubectl Image\n-      working-directory: \n+      working-directory: ./\n       run: |\n-        docker build -t nextcloud .\n+        docker build -t kubectl .\n         docker tag nextcloud sysperu/nextcloud\n         docker push sysperu/nextcloud\n     \n     - name: Build and Push Docker Postgres Image\n"
+                },
+                {
+                    "date": 1711360408669,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -24,9 +24,9 @@\n     - name: Build and Push Docker Kubectl Image\n       working-directory: ./\n       run: |\n         docker build -t kubectl .\n-        docker tag nextcloud sysperu/nextcloud\n+        docker tag kubectl sysperu/nextcloud\n         docker push sysperu/nextcloud\n     \n     - name: Build and Push Docker Postgres Image\n       working-directory: ansible/images/postgres\n"
+                },
+                {
+                    "date": 1711360415489,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -24,10 +24,10 @@\n     - name: Build and Push Docker Kubectl Image\n       working-directory: ./\n       run: |\n         docker build -t kubectl .\n-        docker tag kubectl sysperu/nextcloud\n-        docker push sysperu/nextcloud\n+        docker tag kubectl sysperu/kubectl\n+        docker push sysperu/kubectl\n     \n     - name: Build and Push Docker Postgres Image\n       working-directory: ansible/images/postgres\n       run: |\n"
+                },
+                {
+                    "date": 1711360420846,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -25,12 +25,5 @@\n       working-directory: ./\n       run: |\n         docker build -t kubectl .\n         docker tag kubectl sysperu/kubectl\n-        docker push sysperu/kubectl\n-    \n-    - name: Build and Push Docker Postgres Image\n-      working-directory: ansible/images/postgres\n-      run: |\n-        docker build -t postgres .\n-        docker tag postgres sysperu/postgres\n-        docker push sysperu/postgres \n\\ No newline at end of file\n+        docker push sysperu/kubectl\n\\ No newline at end of file\n"
+                }
+            ],
+            "date": 1711360368340,
+            "name": "Commit-0",
+            "content": "name: Docker Image CI\n\non:\n  push:\n    branches: [ \"main\" ]\n  pull_request:\n    branches: [ \"main\" ]\n  \njobs:\n  build:\n    runs-on: ubuntu-latest\n\n    steps:\n    - name: Checkout Repository\n      uses: actions/checkout@v4.1.1\n\n    - name: Login to Docker Hub\n      uses: docker/login-action@v3.0.0\n      with:\n        username: ${{ secrets.DOCKER_ACCOUNT }}\n        password: ${{ secrets.DOCKER_TOKEN }}\n          \n\n    - name: Build and Push Docker Nextcloud Image\n      working-directory: ansible/images/nextcloud\n      run: |\n        docker build -t nextcloud .\n        docker tag nextcloud sysperu/nextcloud\n        docker push sysperu/nextcloud\n    \n    - name: Build and Push Docker Postgres Image\n      working-directory: ansible/images/postgres\n      run: |\n        docker build -t postgres .\n        docker tag postgres sysperu/postgres\n        docker push sysperu/postgres "
+        }
+    ]
+}
