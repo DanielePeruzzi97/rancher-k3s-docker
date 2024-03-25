@@ -1,7 +1,11 @@
 #!/bin/bash
 
+function updateKubeConfig(){
+    cp /output/kubeconfig.yaml /root/.kube/config
+    sed -i "s|server:.*|server: $K3S_URL|g" /root/.kube/config
+}
+
 function installCertManager(){
-    kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.14.4/cert-manager.yaml
     helm repo add jetstack https://charts.jetstack.io
     helm repo update
     helm install cert-manager jetstack/cert-manager \
@@ -19,5 +23,6 @@ function installRancherUI(){
         --set bootstrapPassword=admin
 }
 
+updateKubeConfig
 installCertManager
-# installRancherUI
+installRancherUI

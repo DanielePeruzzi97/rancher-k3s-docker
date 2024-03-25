@@ -2,7 +2,7 @@ services:
 
   server:
     image: "rancher/k3s:${K3S_VERSION:-latest}"
-    command: server
+    command: server --tls-san "kubectl"
     tmpfs:
     - /run
     - /var/run
@@ -49,12 +49,16 @@ services:
     image: kubectl:latest
     depends_on:
       - server
-      - agent
+    environment:
+      - K3S_URL=https://server:6443
+    volumes:
+      - .:/output
     networks:
       - k3s
 
 volumes:
   k3s-server: {}
+  k3s-config: {}
 
 networks:
   k3s:
