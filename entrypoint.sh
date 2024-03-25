@@ -1,8 +1,22 @@
 #!/bin/bash
 
+function checkFileChanged(){
+    echo "Checking if file $1 has been changed"
+    checksum=$(cksum $1 | awk '{ print $1 }')
+    while true; do
+        new_checksum=$(cksum $1 | awk '{ print $1 }')
+        if [ "$checksum" != "$new_checksum" ]; then
+            echo "File $1 has been changed"
+            break
+        fi
+    done
+}
+
 function waitForK3SServer(){
+    checkFileChanged /output/config
+    updateKubeConfig
     echo "Waiting for k3s server to be ready..."
-    until kubectl get nodes
+    until kubectl get nodes;
     do
         echo "Waiting for k3s server to be ready"
         sleep 5
@@ -13,21 +27,26 @@ function waitForK3SServer(){
 function waitForPods(){
     echo "Waiting for all pods to be in Running or Completed or Terminated state..."
     # kubectl wait pod --all --for=condition=Running --all-namespaces
-    pods_count=$(kubectl get pods --all-namespaces | grep -c "Running|Completed|Terminated")
-
-    while [ $pods_count -ne $(kubectl get pods --all-namespaces | grep -c "")]
+    while true
     do
-     echo "waiting for all pods to be ready"
-     sleep 10
-    done
+        pods_count=$(kubectl get pods --all-namespaces | grep -cE "Running|Completed|Terminating")
+        total_pods_count=$(kubectl get pods --all-namespaces -o jsonpath='{range .items[*]}{.status.phase}{"\n"}{end}' | wc -l)
 
-    echo "All pods are ready"
+        if [ "$pods_count" -eq "$total_pods_count" ]; then
+            echo "All pods are ready"
+            break
+        else
+            echo "Waiting for all pods to be ready"
+            sleep 10
+        fi
+    done
 }
 
 function updateKubeConfig(){
     echo "Updating kubeconfig to connect to k3s server"
-    cp /output/kubeconfig.yaml /root/.kube/config
+    cp /output/config /root/.kube/config
     sed -i "s|server:.*|server: $K3S_URL|g" /root/.kube/config
+    chmod 600 /root/.kube/config
 }
 
 function installCertManager(){
@@ -53,6 +72,8 @@ function installRancherUI(){
 }
 
 waitForK3SServer
-updateKubeConfig
+sleep 10
 installCertManager
+sleep 10
 installRancherUI
+exit 0
