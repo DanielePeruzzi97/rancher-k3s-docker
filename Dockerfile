@@ -1,5 +1,7 @@
 FROM alpine:3.19.1
 
+ARG TARGETARCH
+
 # Set environment variables
 ENV USER=kube
 ENV GROUP=kube
@@ -26,8 +28,7 @@ RUN wget -q https://github.com/curl/curl/releases/download/curl-8_6_0/curl-8.6.0
     make && make install
 
 # Install kubectl
-# RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" &&\
-RUN curl -LO https://dl.k8s.io/release/v1.28.8/bin/linux/amd64/kubectl &&\
+RUN curl -LO https://dl.k8s.io/release/v1.28.8/bin/linux/${TARGETARCH}/kubectl &&\
     mv kubectl /usr/local/bin/kubectl &&\
     chmod +x /usr/local/bin/kubectl
 
