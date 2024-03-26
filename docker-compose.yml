@@ -64,7 +64,6 @@ services:
 
   kubectl:
     image: sysperu/kubectl:latest
-    # image: kubectl:latest
     depends_on:
       - server
     environment:
