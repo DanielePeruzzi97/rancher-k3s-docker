@@ -25,18 +25,11 @@ jobs:
       with:
         username: ${{ secrets.DOCKER_ACCOUNT }}
         password: ${{ secrets.DOCKER_TOKEN }}
-          
 
-    # - name: Build and Push Docker Kubectl Image
-    #   working-directory: ./
-    #   run: |
-    #     docker build -t kubectl .
-    #     docker tag kubectl sysperu/kubectl
-    #     docker push sysperu/kubectl
     - name: Build and push
       uses: docker/build-push-action@v5
       with:
         context: .
         platforms: linux/amd64,linux/arm64
         push: true
-        tags: sysperu/kubectl:latest
+        tags: ${{ secrets.DOCKER_ACCOUNT }}/kubectl:latest
