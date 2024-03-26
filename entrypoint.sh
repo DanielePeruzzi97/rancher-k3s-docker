@@ -24,7 +24,7 @@ function waitForK3SServer(){
     checkFileChanged /output/config
     updateKubeConfig
     echo "Waiting for k3s server to be ready..."
-    until kubectl get nodes;
+    until kubectl get nodes 2>/dev/null;
     do
         echo "Waiting for k3s server to be ready"
         sleep 5
@@ -37,8 +37,8 @@ function waitForPods(){
     # kubectl wait pod --all --for=condition=Running --all-namespaces
     while true
     do
-        pods_count=$(kubectl get pods --all-namespaces | grep -cE "Running|Completed|Terminating")
-        total_pods_count=$(kubectl get pods --all-namespaces -o jsonpath='{range .items[*]}{.status.phase}{"\n"}{end}' | wc -l)
+        pods_count=$(kubectl get pods --all-namespaces 2>/dev/null | grep -cE "Running|Completed|Terminating")
+        total_pods_count=$(kubectl get pods --all-namespaces -o jsonpath='{range .items[*]}{.status.phase}{"\n"}{end}' 2>/dev/null | wc -l)
 
         if [ "$pods_count" -eq "$total_pods_count" ]; then
             echo "All pods are ready"
@@ -71,9 +71,10 @@ function installCertManager(){
 function installRancherUI(){
     waitForPods
     echo "Installing Rancher UI through helm"
-    helm repo add rancher-stable https://releases.rancher.com/server-charts/stable
+    helm repo add rancher-alpha https://releases.rancher.com/server-charts/alpha
     kubectl create namespace cattle-system
-    helm install rancher rancher-stable/rancher \
+    helm install rancher rancher-alpha/rancher \
+        --devel \
         --namespace cattle-system \
         --set hostname=${RANCHER_DOMAIN} \
         --set bootstrapPassword=${RANCHER_ADMIN_PASSWORD}
