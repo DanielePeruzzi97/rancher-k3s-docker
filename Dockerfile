@@ -27,8 +27,8 @@ RUN wget -q https://github.com/curl/curl/releases/download/curl-8_6_0/curl-8.6.0
     ./configure --with-openssl &&\
     make && make install
 
-# Install kubectl
-RUN curl -LO https://dl.k8s.io/release/v1.28.8/bin/linux/${TARGETARCH}/kubectl &&\
+# Install kubectl with the same version of k3s kubectl
+RUN curl -LO https://dl.k8s.io/release/v1.27.12/bin/linux/${TARGETARCH}/kubectl &&\
     mv kubectl /usr/local/bin/kubectl &&\
     chmod +x /usr/local/bin/kubectl
 

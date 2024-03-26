@@ -1,7 +1,7 @@
 services:
 
   server:
-    image: "rancher/k3s:${K3S_VERSION:-v1.28.8-k3s1}"
+    image: "rancher/k3s:${K3S_VERSION:-v1.27.12-k3s1}"
     container_name: k3s-server
     command: server --tls-san "kubectl"
     tmpfs:
@@ -28,7 +28,7 @@ services:
       - k3s_net
 
   agent-1:
-    image: "rancher/k3s:${K3S_VERSION:-v1.28.8-k3s1}"
+    image: "rancher/k3s:${K3S_VERSION:-v1.27.12-k3s1}"
     container_name: k3s-agent-1
     tmpfs:
       - /run
@@ -47,7 +47,7 @@ services:
       - k3s_net
 
   agent-2:
-    image: "rancher/k3s:${K3S_VERSION:-v1.28.8-k3s1}"
+    image: "rancher/k3s:${K3S_VERSION:-v1.27.12-k3s1}"
     container_name: k3s-agent-2
     tmpfs:
       - /run

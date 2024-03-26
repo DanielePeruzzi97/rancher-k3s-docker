@@ -71,10 +71,9 @@ function installCertManager(){
 function installRancherUI(){
     waitForPods
     echo "Installing Rancher UI through helm"
-    helm repo add rancher-alpha https://releases.rancher.com/server-charts/alpha
+    helm repo add rancher-stable https://releases.rancher.com/server-charts/stable
     kubectl create namespace cattle-system
-    helm install rancher rancher-alpha/rancher \
-        --devel \
+    helm install rancher rancher-stable/rancher \
         --namespace cattle-system \
         --set hostname=${RANCHER_DOMAIN} \
         --set bootstrapPassword=${RANCHER_ADMIN_PASSWORD}
