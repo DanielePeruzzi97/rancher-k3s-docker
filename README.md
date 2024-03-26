@@ -23,7 +23,7 @@ With
 docker compose up
 ```
 
-4 are containers are going to go up:
+4 containers are going to go up:
 
 - k3s-server
 - k3s-agent-1
@@ -31,3 +31,21 @@ docker compose up
 - rancherui-init
 
 **k3s-server** and **k3s-agents** are going to form the cluster, **rancherui-init** it's like an init container that, when all the nodes and default pods are ready, will install cert-manager and rancher-ui in the cluster.
+
+
+## TODO
+
+CVE (3M) fix to implement for **sysperu/kubectl:main** image:
+
+- CVE-2020-8552 k8s.io/apiserver 0.29.0
+- CVE-2024-24786⁠ google.golang.org/protobuf 1.31.0
+- CVE-2024-24557 github.com/docker/docker 24.0.7+incompatible
+
+All regarding /usr/local/bin/helm
+
+CVE (2H and 8M) fix to implement for **rancher/k3s:v1.27.12-k3s1** image.
+
+Containers:
+- Implement rootless mode in k3s docker containers
+- Find a way to remove privileged flag in the compose file
+
