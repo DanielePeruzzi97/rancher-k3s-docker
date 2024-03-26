@@ -1,10 +1,18 @@
 #!/bin/bash
 
+function validateInput() {
+    echo "Checking if K3S_URL variable is populated"
+    if [ -z "$K3S_URL" ]; then
+        echo "K3S_URL is not populated, exiting.."
+        exit 1
+    fi
+}
+
 function checkFileChanged(){
     echo "Checking if file $1 has been changed"
-    checksum=$(cksum $1 | awk '{ print $1 }')
+    checksum=$(cksum $1 2>/dev/null | awk '{ print $1 }')
     while true; do
-        new_checksum=$(cksum $1 | awk '{ print $1 }')
+        new_checksum=$(cksum $1 2>/dev/null | awk '{ print $1 }')
         if [ "$checksum" != "$new_checksum" ]; then
             echo "File $1 has been changed"
             break
@@ -44,9 +52,9 @@ function waitForPods(){
 
 function updateKubeConfig(){
     echo "Updating kubeconfig to connect to k3s server"
-    cp /output/config /root/.kube/config
-    sed -i "s|server:.*|server: $K3S_URL|g" /root/.kube/config
-    chmod 600 /root/.kube/config
+    cp /output/config ${KUBECONFIG}
+    sed -i "s|server:.*|server: $K3S_URL|g" ${KUBECONFIG}
+    chmod 600 ${KUBECONFIG}
 }
 
 function installCertManager(){
@@ -71,6 +79,7 @@ function installRancherUI(){
         --set bootstrapPassword=${RANCHER_ADMIN_PASSWORD}
 }
 
+validateInput
 waitForK3SServer
 sleep 10
 installCertManager

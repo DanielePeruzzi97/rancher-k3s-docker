@@ -2,6 +2,7 @@ services:
 
   server:
     image: "rancher/k3s:${K3S_VERSION:-latest}"
+    container_name: k3s-server
     command: server --tls-san "kubectl"
     tmpfs:
       - /run
@@ -18,16 +19,17 @@ services:
     - K3S_KUBECONFIG_OUTPUT=/output/config
     - K3S_KUBECONFIG_MODE=666
     volumes:
-    - k3s-server:/var/lib/rancher/k3s
+    - k3s_server:/var/lib/rancher/k3s
     - .:/output
     ports:
     - 80:80
     - 443:443
     networks:
-      - k3s
+      - k3s_net
 
   agent-1:
     image: "rancher/k3s:${K3S_VERSION:-latest}"
+    container_name: k3s-agent-1
     tmpfs:
       - /run
       - /var/run
@@ -42,10 +44,11 @@ services:
     - K3S_URL=https://server:6443
     - K3S_TOKEN=${K3S_TOKEN:-secret}
     networks:
-      - k3s
+      - k3s_net
 
   agent-2:
     image: "rancher/k3s:${K3S_VERSION:-latest}"
+    container_name: k3s-agent-2
     tmpfs:
       - /run
       - /var/run
@@ -60,10 +63,11 @@ services:
     - K3S_URL=https://server:6443
     - K3S_TOKEN=${K3S_TOKEN:-secret}
     networks:
-      - k3s
+      - k3s_net
 
   kubectl:
     image: sysperu/kubectl:latest
+    container_name: rancherui-init
     depends_on:
       - server
     environment:
@@ -73,12 +77,11 @@ services:
     volumes:
       - .:/output
     networks:
-      - k3s
+      - k3s_net
 
 volumes:
-  k3s-server: {}
-  k3s-config: {}
+  k3s_server: {}
 
 networks:
-  k3s:
+  k3s_net:
     driver: bridge
