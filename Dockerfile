@@ -15,7 +15,15 @@ RUN addgroup -S ${GROUP} && adduser -D -h ${HOME} -S ${USER} -G ${GROUP} &&\
     mkdir -p ${KUBECONFIG_DIR} && chown -R ${USER}:${GROUP} ${KUBECONFIG_DIR}
 
 # Install dependencies (openssl and bash are required for helm)
-RUN apk add --no-cache curl openssl bash
+RUN apk add --no-cache openssl bash
+
+# Fixing https://security.alpinelinux.org/vuln/CVE-2024-0853
+RUN wget -q https://github.com/curl/curl/releases/download/curl-8_6_0/curl-8.6.0.tar.gz &&\
+    tar -xf curl-8.6.0.tar.gz &&\
+    cd curl-8.6.0 &&\
+    apk add openssl-dev g++ make autoconf libpsl-dev &&\
+    ./configure --with-openssl &&\
+    make && make install
 
 # Install kubectl
 RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" &&\
