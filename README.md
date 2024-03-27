@@ -1,6 +1,21 @@
 # Rancher/k3s cluster in docker containers
 
-Learning how to deploy a simple 3 nodes (1 server and 2 agents) k3s cluster with rancher ui installed through a docker-compose.
+## How to use
+
+Download the docker-compose.yml.
+
+Then:
+
+```
+docker compose up
+```
+
+the operation can take a while.
+
+To check the pods enter in the k3s-server container and run:
+```
+watch kubectl get pods --all-namespaces
+```
 
 ## Environment
 
@@ -17,12 +32,6 @@ ENV:
 
 ## Docker containers:
 
-With
-
-```bash
-docker compose up
-```
-
 4 containers are going to go up:
 
 - k3s-server
@@ -30,8 +39,7 @@ docker compose up
 - k3s-agent-2
 - rancherui-init
 
-**k3s-server** and **k3s-agents** are going to form the cluster, **rancherui-init** it's like an init container that, when all the nodes and default pods are ready, will install cert-manager and rancher-ui in the cluster.
-
+**k3s-server** and **k3s-agents** are going to form the cluster, **rancherui-init** it's an init container that, when all the nodes and default pods are ready, will install cert-manager and rancher-ui in the cluster without privileged flag.
 
 ## TODO
 
@@ -48,6 +56,12 @@ CVE (2H and 8M) fix to implement for **rancher/k3s:v1.27.12-k3s1** image.
 Containers:
 - [ ] Implement rootless mode in k3s docker containers
 - [ ] Find a way to remove privileged flag in the compose file
+
+Regarding the last point, the flag privileged seems necessary in a container in container environament.
+Even if maybe possible to remove the flag mounting hosts directories inside k3s containers, as cgroup and kernel modules directories in rw mode.
+Also it's possible to have a more precise control adding cap_add options in the docker compose file.
+
+Thats a way to reproduce the same privileged flag condition without using it.
 
 ```mermaid
 C4Context
