@@ -52,6 +52,10 @@ function waitForPods(){
 
 function updateKubeConfig(){
     echo "Updating kubeconfig to connect to k3s server"
+    if [ ! -f /output/config ]; then
+        echo "File /output/config does not exist"
+        exit 1
+    fi
     cp /output/config ${KUBECONFIG}
     sed -i "s|server:.*|server: $K3S_URL|g" ${KUBECONFIG}
     chmod 600 ${KUBECONFIG}
